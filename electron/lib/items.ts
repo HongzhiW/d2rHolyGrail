@@ -1,6 +1,7 @@
 import { dialog } from 'electron';
 import * as d2s from '@dschu012/d2s';
 import * as d2stash from '@dschu012/d2s/lib/d2/stash';
+import * as d2gomule from '@dschu012/d2s/lib/d2/gomule';
 import { constants as constants96 } from '@dschu012/d2s/lib/data/versions/96_constant_data';
 import { constants as constants99 } from '@dschu012/d2s/lib/data/versions/99_constant_data';
 import { existsSync, promises } from 'fs';
@@ -381,13 +382,21 @@ class ItemsStore {
       });
     }
 
+    const parseGoMule = (response: d2s.types.IAtma) => {
+      parseItems(response.items);
+    }
+
     switch (extension) {
       case '.sss':
-      case '.d2x':
-        await d2stash.read(content).then((response) => {
+        await d2stash.read(content).then((response: any) => {
           response.hardcore === saveName.toLowerCase().includes('hardcore');
           parseStash(response);
         });
+        break;
+      case '.d2x':
+        await d2gomule.read(content).then((response: d2s.types.IAtma) => {
+          parseGoMule(response);
+        })
         break;
       case '.d2i':
         await d2stash.read(content).then(parseStash);
